@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-export async function extractBody(req: NextRequest) {
+export async function extractBody(req: NextRequest | Response) {
   if (!req.body) {
     return null;
   }
