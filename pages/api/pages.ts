@@ -3,36 +3,11 @@ import { Pool } from "@neondatabase/serverless";
 import type { NextFetchEvent, NextRequest } from "next/server";
 import zod, { string } from "zod";
 import sqlstring from "sqlstring";
+import { extractBody } from "@/utils/extractBody";
 
 export const config = {
   runtime: "edge",
 };
-
-async function extractBody(req: NextRequest) {
-  if (!req.body) {
-    return null;
-  }
-
-  const decoder = new TextDecoder();
-  const reader = req.body.getReader();
-
-  let body = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) {
-      try {
-        return JSON.parse(body);
-      } catch (e) {
-        console.error(e);
-        return null;
-      }
-    }
-
-    body += decoder.decode(value);
-  }
-}
 
 const schema = zod.object({
   handle: string().max(64).min(1),
